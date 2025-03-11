@@ -1,0 +1,5 @@
+Package: tosnipper
+Type: Package
+Title: Convert files to SNIPPER-analysis ready files
+Version: 0.0.1.0
+RoxygenNote: 7.3.2
