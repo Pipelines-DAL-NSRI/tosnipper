@@ -2,12 +2,14 @@
 #' @description
 #' This package takes in xlsx, csv, or vcf files and their metadata to convert them to a SNIPPER-analysis-ready file. 
 #' @param input can be an xlsx, csv, or vcf file. If an xlsx or csv file, the first column should be "Sample" while the succeeding columns are genotypes with marker names as headers.
-#' @param reference should be an xlsx or csv file. It should contain three columns 1) Sample, 2) Population, and 3) Superpopulation/Continental region
-#' @param target.pop is described by the user. This is the target population they want to classify in SNIPPER.
+#' @param references should be an xlsx or csv file. It should contain three columns 1) Sample, 2) Population, and 3) Superpopulation/Continental region
+#' @param target.pop indicates the test population. Set to FALSE if all populations will be used as training data
+#' @param population.name is described by the user. This is the target population they want to classify in SNIPPER.
+#' @param markers is the number of markers in the dataset.
 #' @examples
-#' tosnipper("excelfile.xlsx", "reference.csv", target.pop = "Filipino")
+#' tosnipper("excelfile.xlsx", "references.csv", target.pop = "Filipino")
 #' @export
-tosnipper <- function(input, reference, target.pop = population){
+tosnipper <- function(input, references, target.pop = TRUE, population.name = population, markers = snps){
    
    # load in input file
    if (tools::file_ext(input) == "csv"){
@@ -80,7 +82,8 @@ tosnipper <- function(input, reference, target.pop = population){
       report::report("No Sample in file")
    }
    
-   # split per population?
+   
+   # split per population
    tosnpr_split <- split(to_excel, to_excel$Population)
    
    library(purrr)
@@ -102,15 +105,22 @@ tosnipper <- function(input, reference, target.pop = population){
    merged <- plyr::ldply(tosnpr_split, data.frame)
    merged <- merged[,-c(1,3)]
    
-   
-   # Subset the target pop
-   target <- merged[merged$Population == target.pop,]
-   target$snpr <- "0"
-   
-   non.target <- merged[merged$Population != target.pop,]
-   non.target$snpr <- "1"
-   
-   merged2 <- dplyr::bind_rows(target, non.target)
+   if(target.pop == TRUE){
+      
+      # Subset the target pop
+      target <- merged[merged$Population == target.pop,]
+      target$snpr <- "0"
+      
+      non.target <- merged[merged$Population != target.pop,]
+      non.target$snpr <- "1"
+      
+      merged2 <- dplyr::bind_rows(target, non.target) 
+   } else if(target.pop == FALSE) {
+      
+      merged2 <- merged
+      merged2$snpr <- "1"
+      
+   }
    
    # add value
    # count number of samples
@@ -128,12 +138,14 @@ tosnipper <- function(input, reference, target.pop = population){
    names(merged3)[names(merged3) == "...1"] <- sample.count
    names(merged3)[names(merged3) == "Superpop"] <- markers
    names(merged3)[names(merged3) == "Sample"] <- pop.count
+   names(merged3)[names(merged3) == "snpr"] <- ""
    
    # merged3[nrow(merged3)+4,] <- NA #or
    merged3 <- rbind(NA, merged3)
    merged3 <- rbind(NA, merged3)
    merged3 <- rbind(NA, merged3)
    merged3 <- rbind(NA, merged3)
+   
    
    openxlsx::write.xlsx(merged3, "snipper.xlsx")
 }

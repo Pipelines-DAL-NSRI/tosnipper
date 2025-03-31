@@ -4,18 +4,28 @@
 \alias{tosnipper}
 \title{Convert files to SNIPPER-analysis ready files}
 \usage{
-tosnipper(input, reference, target.pop = population)
+tosnipper(
+  input,
+  references,
+  target.pop = TRUE,
+  population.name = population,
+  markers = snps
+)
 }
 \arguments{
 \item{input}{can be an xlsx, csv, or vcf file. If an xlsx or csv file, the first column should be "Sample" while the succeeding columns are genotypes with marker names as headers.}
 
-\item{reference}{should be an xlsx or csv file. It should contain three columns 1) Sample, 2) Population, and 3) Superpopulation/Continental region}
+\item{references}{should be an xlsx or csv file. It should contain three columns 1) Sample, 2) Population, and 3) Superpopulation/Continental region}
 
-\item{target.pop}{is described by the user. This is the target population they want to classify in SNIPPER.}
+\item{target.pop}{indicates the test population. Set to FALSE if all populations will be used as training data}
+
+\item{population.name}{is described by the user. This is the target population they want to classify in SNIPPER.}
+
+\item{markers}{is the number of markers in the dataset.}
 }
 \description{
 This package takes in xlsx, csv, or vcf files and their metadata to convert them to a SNIPPER-analysis-ready file.
 }
 \examples{
-tosnipper("excelfile.xlsx", "reference.csv", target.pop = "Filipino")
+tosnipper("excelfile.xlsx", "references.csv", target.pop = "Filipino")
 }
