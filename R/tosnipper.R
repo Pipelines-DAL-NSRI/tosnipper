@@ -79,7 +79,7 @@ tosnipper <- function(input, references, target.pop = TRUE, population.name = po
       names(to_excel)[names(to_excel) == "matched$Sample"] <- "Sample"
       
    } else {
-      report::report("No Sample in file")
+      stop("No Sample in file")
    }
    
    
