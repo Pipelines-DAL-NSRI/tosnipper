@@ -3,13 +3,30 @@
 #' This package takes in xlsx, csv, or vcf files and their metadata to convert them to a SNIPPER-analysis-ready file. 
 #' @param input can be an xlsx, csv, or vcf file. If an xlsx or csv file, the first column should be "Sample" while the succeeding columns are genotypes with marker names as headers.
 #' @param references should be an xlsx or csv file. It should contain three columns 1) Sample, 2) Population, and 3) Superpopulation/Continental region
-#' @param target.pop indicates the test population. Set to FALSE if all populations will be used as training data
+#' @param target.pop should be set to TRUE if there is a target population to classify. 
 #' @param population.name is described by the user. This is the target population they want to classify in SNIPPER.
-#' @param markers is the number of markers in the dataset.
+#' @param markers is the number of SNPs/markers in the dataset.
+#' @import pacman
+#' @import tools
+#' @import readr
+#' @import readxl
+#' @import vcfR
+#' @import dplyr
+#' @import purrr
+#' @import plyr
+#' @import openxlsx
 #' @examples
-#' tosnipper("excelfile.xlsx", "references.csv", target.pop = "Filipino")
+#' tosnipper("excelfile.xlsx", "references.csv", target.pop = TRUE, population.name" = Filipino", markers = 40)
+#' tosnipper("excelfile.csv", "metadata.xlsx", target.pop = FALSE, markers = 32)
 #' @export
+
 tosnipper <- function(input, references, target.pop = TRUE, population.name = population, markers = snps){
+   
+   if(!require("pacman")){
+      install.packages("pacman")
+   }
+   
+   pacman::p_load(pacman, tools, readr, readxl, vcfR, dplyr, purrr, plyr, openxlsx, install = TRUE)
    
    # load in input file
    if (tools::file_ext(input) == "csv"){
@@ -79,7 +96,7 @@ tosnipper <- function(input, references, target.pop = TRUE, population.name = po
       names(to_excel)[names(to_excel) == "matched$Sample"] <- "Sample"
       
    } else {
-      report::report("No Sample in file")
+      stop("No Sample in file")
    }
    
    
@@ -120,6 +137,8 @@ tosnipper <- function(input, references, target.pop = TRUE, population.name = po
       merged2 <- merged
       merged2$snpr <- "1"
       
+   } else{
+      stop("Parameter target.pop is not stated.")
    }
    
    # add value

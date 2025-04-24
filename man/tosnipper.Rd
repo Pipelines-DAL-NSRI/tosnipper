@@ -17,15 +17,16 @@ tosnipper(
 
 \item{references}{should be an xlsx or csv file. It should contain three columns 1) Sample, 2) Population, and 3) Superpopulation/Continental region}
 
-\item{target.pop}{indicates the test population. Set to FALSE if all populations will be used as training data}
+\item{target.pop}{should be set to TRUE if there is a target population to classify.}
 
 \item{population.name}{is described by the user. This is the target population they want to classify in SNIPPER.}
 
-\item{markers}{is the number of markers in the dataset.}
+\item{markers}{is the number of SNPs/markers in the dataset.}
 }
 \description{
 This package takes in xlsx, csv, or vcf files and their metadata to convert them to a SNIPPER-analysis-ready file.
 }
 \examples{
-tosnipper("excelfile.xlsx", "references.csv", target.pop = "Filipino")
+tosnipper("excelfile.xlsx", "references.csv", target.pop = TRUE, population.name" = Filipino", markers = 40)
+tosnipper("excelfile.csv", "metadata.xlsx", target.pop = FALSE, markers = 32)
 }
