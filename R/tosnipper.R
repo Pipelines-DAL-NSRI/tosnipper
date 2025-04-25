@@ -16,7 +16,7 @@
 #' @import plyr
 #' @import openxlsx
 #' @examples
-#' tosnipper("excelfile.xlsx", "references.csv", target.pop = TRUE, population.name" = Filipino", markers = 40)
+#' tosnipper("excelfile.xlsx", "references.csv", target.pop = TRUE, population.name = "Filipino", markers = 40)
 #' tosnipper("excelfile.csv", "metadata.xlsx", target.pop = FALSE, markers = 32)
 #' @export
 

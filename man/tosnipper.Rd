@@ -27,6 +27,6 @@ tosnipper(
 This package takes in xlsx, csv, or vcf files and their metadata to convert them to a SNIPPER-analysis-ready file.
 }
 \examples{
-tosnipper("excelfile.xlsx", "references.csv", target.pop = TRUE, population.name" = Filipino", markers = 40)
+tosnipper("excelfile.xlsx", "references.csv", target.pop = TRUE, population.name = "Filipino", markers = 40)
 tosnipper("excelfile.csv", "metadata.xlsx", target.pop = FALSE, markers = 32)
 }
