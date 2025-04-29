@@ -62,6 +62,11 @@ tosnipper <- function(input, references, target.pop = TRUE, population.name = po
    
    tosnipper <- as.data.frame(tosnipper)
    
+   # to check Sample column for compatibility
+   if(class(tosnipper$Sample) != "character"){
+      tosnipper$Sample <-  as.character(tosnipper$Sample)
+   }
+   
    
    # load in the reference
    if(tools::file_ext(references) == "xlsx"){
@@ -74,6 +79,11 @@ tosnipper <- function(input, references, target.pop = TRUE, population.name = po
    
    if("Sample" %in% names(reference)){
       library(dplyr) #in case there's an error loading the library
+      
+      if(class(reference$Sample) != "character"){
+         reference$Sample <-  as.character(reference$Sample)
+      }
+      
       matched <- tosnipper %>% dplyr::left_join(reference, by = "Sample")
       last.col <- as.integer(ncol(matched)) # refer to the total number of columns
       sec.last <- last.col -1
@@ -96,7 +106,7 @@ tosnipper <- function(input, references, target.pop = TRUE, population.name = po
       names(to_excel)[names(to_excel) == "matched$Sample"] <- "Sample"
       
    } else {
-      stop("No Sample in file")
+      stop("No 'Sample' header in reference file")
    }
    
    
@@ -125,10 +135,10 @@ tosnipper <- function(input, references, target.pop = TRUE, population.name = po
    if(target.pop == TRUE){
       
       # Subset the target pop
-      target <- merged[merged$Population == target.pop,]
+      target <- merged[merged$Population == population.name,]
       target$snpr <- "0"
       
-      non.target <- merged[merged$Population != target.pop,]
+      non.target <- merged[merged$Population != population.name,]
       non.target$snpr <- "1"
       
       merged2 <- dplyr::bind_rows(target, non.target) 
